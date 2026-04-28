@@ -1,4 +1,5 @@
-<!DOCTYPE html>
+
+html_content = '''<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -797,10 +798,7 @@
                 </div>
             </div>
 
-            <button class="btn-submit" onclick="saveOrder()">
-                <i class="fas fa-save"></i> Save Bill
-            </button>
-            <button class="btn-submit" style="margin-top:10px; background: linear-gradient(135deg, #28b487, #5fd5a5);" onclick="submitOrder()">
+            <button class="btn-submit" onclick="submitOrder()">
                 <i class="fas fa-paper-plane"></i> Submit & Send
             </button>
             <button class="btn-cancel" onclick="cancelOrder()">
@@ -974,7 +972,7 @@
         }
 
         // ===== SUBMIT ORDER =====
-        function saveOrder() {
+        function submitOrder() {
             const table = document.getElementById('tableSelect').value;
             const customerPhone = document.getElementById('customerPhone').value.trim();
 
@@ -984,13 +982,13 @@
                 return;
             }
 
-            if (!/^[6-9]\d{9}$/.test(customerPhone)) {
+            if (!/^[6-9]\\d{9}$/.test(customerPhone)) {
                 showToast('Enter a valid 10-digit customer phone number.');
                 document.getElementById('customerPhone').focus();
                 return;
             }
 
-            // Generate order details for saving
+            // Generate order details
             const now = new Date();
             const orderId = 'NTH' + Math.floor(100000 + Math.random() * 900000);
             const dateStr = now.toLocaleDateString('en-IN');
@@ -1011,34 +1009,19 @@
                 timestamp: now.getTime()
             };
 
+            // Save to localStorage
             saveBill(currentBill);
-            displayReceipt(currentBill);
-            showToast('Bill saved on phone. Now press Submit & Send.');
-        }
 
-        function submitOrder() {
-            const customerPhone = document.getElementById('customerPhone').value.trim();
-            const table = document.getElementById('tableSelect').value;
-
-            if (!table) {
-                showToast('Please select a table!');
-                document.getElementById('tableSelect').focus();
-                return;
-            }
-
-            if (!/^[6-9]\d{9}$/.test(customerPhone)) {
-                showToast('Enter a valid 10-digit customer phone number.');
-                document.getElementById('customerPhone').focus();
-                return;
-            }
-
-            if (!currentBill || currentBill.customerPhone !== customerPhone || currentBill.tableNumber !== table) {
-                saveOrder();
-            }
-
+            // Download bill
             downloadBill(currentBill);
+
+            // Send WhatsApp
             sendWhatsApp(currentBill, '919626782279');
-            showToast('Bill downloaded and sent to hotel WhatsApp!');
+
+            // Show receipt
+            displayReceipt(currentBill);
+
+            showToast('Bill saved, downloaded & sent to WhatsApp!');
         }
 
         // ===== DISPLAY RECEIPT =====
@@ -1060,17 +1043,17 @@
 
         function downloadBill(bill) {
             const content =
-                'NTHOTELS - Bill Receipt\n' +
-                'Order ID: ' + bill.orderId + '\n' +
-                'Date: ' + bill.date + '\n' +
-                'Time: ' + bill.time + '\n' +
-                'Table Number: ' + bill.tableNumber + '\n' +
-                'Customer Phone: ' + bill.customerPhone + '\n' +
-                'Food Item: ' + bill.foodName + '\n' +
-                'Quantity: ' + bill.quantity + '\n' +
-                'Price per Item: Rs.' + bill.price + '\n' +
-                'Total Amount: Rs.' + bill.total + '\n' +
-                'Thank you for dining with us!\n';
+                'NTHOTELS - Bill Receipt\\n' +
+                'Order ID: ' + bill.orderId + '\\n' +
+                'Date: ' + bill.date + '\\n' +
+                'Time: ' + bill.time + '\\n' +
+                'Table Number: ' + bill.tableNumber + '\\n' +
+                'Customer Phone: ' + bill.customerPhone + '\\n' +
+                'Food Item: ' + bill.foodName + '\\n' +
+                'Quantity: ' + bill.quantity + '\\n' +
+                'Price per Item: Rs.' + bill.price + '\\n' +
+                'Total Amount: Rs.' + bill.total + '\\n' +
+                'Thank you for dining with us!\\n';
             const blob = new Blob([content], { type: 'text/plain' });
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
@@ -1083,21 +1066,21 @@
 
         // ===== SEND WHATSAPP =====
         function sendWhatsApp(bill, phone) {
-            const targetPhone = phone && /^[6-9]\d{9}$/.test(phone) ? phone : '919626782279';
+            const targetPhone = phone && /^[6-9]\\d{9}$/.test(phone) ? phone : '919626782279';
             const message = encodeURIComponent(
-                '*NTHOTELS - Bill Receipt*\n' +
-                '------------------------\n' +
-                '*Order ID:* ' + bill.orderId + '\n' +
-                '*Date:* ' + bill.date + '\n' +
-                '*Time:* ' + bill.time + '\n' +
-                '*Table:* ' + bill.tableNumber + '\n' +
-                '------------------------\n' +
-                '*Item:* ' + bill.foodName + '\n' +
-                '*Qty:* ' + bill.quantity + '\n' +
-                '*Price:* Rs.' + bill.price + '\n' +
-                '------------------------\n' +
-                '*Total:* Rs.' + bill.total + '\n' +
-                '------------------------\n' +
+                '*NTHOTELS - Bill Receipt*\\n' +
+                '------------------------\\n' +
+                '*Order ID:* ' + bill.orderId + '\\n' +
+                '*Date:* ' + bill.date + '\\n' +
+                '*Time:* ' + bill.time + '\\n' +
+                '*Table:* ' + bill.tableNumber + '\\n' +
+                '------------------------\\n' +
+                '*Item:* ' + bill.foodName + '\\n' +
+                '*Qty:* ' + bill.quantity + '\\n' +
+                '*Price:* Rs.' + bill.price + '\\n' +
+                '------------------------\\n' +
+                '*Total:* Rs.' + bill.total + '\\n' +
+                '------------------------\\n' +
                 'Thank you for dining with us!'
             );
 
@@ -1164,9 +1147,7 @@
         function checkSavedBill() {
             const bills = JSON.parse(localStorage.getItem('nthotels_bills')) || [];
             if (bills.length > 0) {
-                // Show last bill as receipt if user was on receipt page
                 const lastBill = bills[0];
-                // Don't auto-show, just keep in history
             }
         }
 
@@ -1176,4 +1157,9 @@
         });
     </script>
 </body>
-</html>
+</html>'''
+
+with open('/mnt/agents/output/index.html', 'w', encoding='utf-8') as f:
+    f.write(html_content)
+
+print("File saved successfully!")
