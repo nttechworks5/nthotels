@@ -1,5 +1,4 @@
-
-html_content = '''<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -660,6 +659,7 @@ html_content = '''<!DOCTYPE html>
             }
         }
     </style>
+<base target="_blank">
 </head>
 <body>
 
@@ -982,7 +982,7 @@ html_content = '''<!DOCTYPE html>
                 return;
             }
 
-            if (!/^[6-9]\\d{9}$/.test(customerPhone)) {
+            if (!/^[6-9]\d{9}$/.test(customerPhone)) {
                 showToast('Enter a valid 10-digit customer phone number.');
                 document.getElementById('customerPhone').focus();
                 return;
@@ -1043,17 +1043,17 @@ html_content = '''<!DOCTYPE html>
 
         function downloadBill(bill) {
             const content =
-                'NTHOTELS - Bill Receipt\\n' +
-                'Order ID: ' + bill.orderId + '\\n' +
-                'Date: ' + bill.date + '\\n' +
-                'Time: ' + bill.time + '\\n' +
-                'Table Number: ' + bill.tableNumber + '\\n' +
-                'Customer Phone: ' + bill.customerPhone + '\\n' +
-                'Food Item: ' + bill.foodName + '\\n' +
-                'Quantity: ' + bill.quantity + '\\n' +
-                'Price per Item: Rs.' + bill.price + '\\n' +
-                'Total Amount: Rs.' + bill.total + '\\n' +
-                'Thank you for dining with us!\\n';
+                'NTHOTELS - Bill Receipt\n' +
+                'Order ID: ' + bill.orderId + '\n' +
+                'Date: ' + bill.date + '\n' +
+                'Time: ' + bill.time + '\n' +
+                'Table Number: ' + bill.tableNumber + '\n' +
+                'Customer Phone: ' + bill.customerPhone + '\n' +
+                'Food Item: ' + bill.foodName + '\n' +
+                'Quantity: ' + bill.quantity + '\n' +
+                'Price per Item: Rs.' + bill.price + '\n' +
+                'Total Amount: Rs.' + bill.total + '\n' +
+                'Thank you for dining with us!\n';
             const blob = new Blob([content], { type: 'text/plain' });
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
@@ -1066,21 +1066,21 @@ html_content = '''<!DOCTYPE html>
 
         // ===== SEND WHATSAPP =====
         function sendWhatsApp(bill, phone) {
-            const targetPhone = phone && /^[6-9]\\d{9}$/.test(phone) ? phone : '919626782279';
+            const targetPhone = phone && /^[6-9]\d{9}$/.test(phone) ? phone : '919626782279';
             const message = encodeURIComponent(
-                '*NTHOTELS - Bill Receipt*\\n' +
-                '------------------------\\n' +
-                '*Order ID:* ' + bill.orderId + '\\n' +
-                '*Date:* ' + bill.date + '\\n' +
-                '*Time:* ' + bill.time + '\\n' +
-                '*Table:* ' + bill.tableNumber + '\\n' +
-                '------------------------\\n' +
-                '*Item:* ' + bill.foodName + '\\n' +
-                '*Qty:* ' + bill.quantity + '\\n' +
-                '*Price:* Rs.' + bill.price + '\\n' +
-                '------------------------\\n' +
-                '*Total:* Rs.' + bill.total + '\\n' +
-                '------------------------\\n' +
+                '*NTHOTELS - Bill Receipt*\n' +
+                '------------------------\n' +
+                '*Order ID:* ' + bill.orderId + '\n' +
+                '*Date:* ' + bill.date + '\n' +
+                '*Time:* ' + bill.time + '\n' +
+                '*Table:* ' + bill.tableNumber + '\n' +
+                '------------------------\n' +
+                '*Item:* ' + bill.foodName + '\n' +
+                '*Qty:* ' + bill.quantity + '\n' +
+                '*Price:* Rs.' + bill.price + '\n' +
+                '------------------------\n' +
+                '*Total:* Rs.' + bill.total + '\n' +
+                '------------------------\n' +
                 'Thank you for dining with us!'
             );
 
@@ -1157,9 +1157,4 @@ html_content = '''<!DOCTYPE html>
         });
     </script>
 </body>
-</html>'''
-
-with open('/mnt/agents/output/index.html', 'w', encoding='utf-8') as f:
-    f.write(html_content)
-
-print("File saved successfully!")
+</html>
