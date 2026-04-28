@@ -1,0 +1,1178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NTHOTELS - Smart Billing</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ===== ROOT VARIABLES ===== */
+        :root {
+            --bg-dark: #0f0f1a;
+            --bg-card: #1a1a2e;
+            --bg-card-hover: #252542;
+            --primary: #ff6b35;
+            --primary-hover: #ff8555;
+            --text-light: #f0f0f5;
+            --text-muted: #a0a0b0;
+            --border: #2a2a40;
+            --success: #00d084;
+            --shadow: 0 8px 32px rgba(0,0,0,0.4);
+            --radius: 16px;
+            --transition: all 0.3s ease;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-light);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* ===== NAVBAR ===== */
+        .navbar {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 1000;
+            background: rgba(15, 15, 26, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 0 2rem;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            letter-spacing: 1px;
+        }
+
+        .nav-brand i {
+            font-size: 1.8rem;
+            color: var(--primary);
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-links a {
+            padding: 8px 18px;
+            border-radius: 25px;
+            color: var(--text-muted);
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            text-decoration: none;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            background: rgba(255, 107, 53, 0.15);
+            color: var(--primary);
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            padding: 8px;
+        }
+
+        .hamburger span {
+            width: 24px;
+            height: 2.5px;
+            background: var(--text-light);
+            border-radius: 3px;
+            transition: var(--transition);
+        }
+
+        /* ===== HERO ===== */
+        .hero {
+            margin-top: 70px;
+            padding: 60px 2rem 40px;
+            text-align: center;
+            background: linear-gradient(180deg, rgba(255,107,53,0.08) 0%, transparent 100%);
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, var(--primary), #ffaa77);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        /* ===== MENU SECTION ===== */
+        .menu-section {
+            padding: 20px 2rem 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .menu-section h2 {
+            text-align: center;
+            font-size: 1.8rem;
+            margin-bottom: 30px;
+            color: var(--text-light);
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 25px;
+        }
+
+        .food-card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            overflow: hidden;
+            border: 1px solid var(--border);
+            transition: var(--transition);
+            animation: fadeInUp 0.5s ease forwards;
+            opacity: 0;
+        }
+
+        .food-card:nth-child(1) { animation-delay: 0.1s; }
+        .food-card:nth-child(2) { animation-delay: 0.2s; }
+        .food-card:nth-child(3) { animation-delay: 0.3s; }
+        .food-card:nth-child(4) { animation-delay: 0.4s; }
+
+        @keyframes fadeInUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .food-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--primary);
+            box-shadow: 0 12px 40px rgba(255, 107, 53, 0.15);
+        }
+
+        .food-image {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+
+        .food-card:hover .food-image {
+            transform: scale(1.05);
+        }
+
+        .food-details {
+            padding: 20px;
+        }
+
+        .food-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .food-price {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .btn-buy {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: var(--transition);
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .btn-buy:hover {
+            transform: scale(1.02);
+            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
+        }
+
+        .btn-buy:active {
+            transform: scale(0.98);
+        }
+
+        /* ===== ORDER FORM ===== */
+        .order-section {
+            padding: 0 2rem 40px;
+            max-width: 600px;
+            margin: 0 auto;
+            display: none;
+        }
+
+        .order-section.active {
+            display: block;
+            animation: slideUp 0.4s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .order-card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 30px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+        }
+
+        .order-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 25px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 14px 16px;
+            background: var(--bg-dark);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-light);
+            font-size: 1rem;
+            font-family: 'Poppins', sans-serif;
+            transition: var(--transition);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+        }
+
+        .qty-control {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .qty-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            border: 2px solid var(--primary);
+            background: transparent;
+            color: var(--primary);
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .qty-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .qty-value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            min-width: 50px;
+            text-align: center;
+        }
+
+        .bill-preview {
+            background: var(--bg-dark);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            border: 1px solid var(--border);
+        }
+
+        .bill-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+        }
+
+        .bill-row.total {
+            border-top: 2px dashed var(--border);
+            margin-top: 10px;
+            padding-top: 15px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: var(--transition);
+            font-family: 'Poppins', sans-serif;
+            margin-top: 10px;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
+        }
+
+        .btn-cancel {
+            width: 100%;
+            padding: 14px;
+            background: transparent;
+            color: var(--text-muted);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: 'Poppins', sans-serif;
+            margin-top: 10px;
+        }
+
+        .btn-cancel:hover {
+            border-color: var(--danger);
+            color: #ff4757;
+        }
+
+        /* ===== BILL RECEIPT ===== */
+        .receipt-section {
+            padding: 0 2rem 40px;
+            max-width: 500px;
+            margin: 0 auto;
+            display: none;
+        }
+
+        .receipt-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .receipt {
+            background: linear-gradient(135deg, #1a1a2e, #252542);
+            border-radius: var(--radius);
+            padding: 30px;
+            border: 2px solid var(--primary);
+            box-shadow: 0 0 30px rgba(255, 107, 53, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .receipt::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,107,53,0.05) 0%, transparent 60%);
+        }
+
+        .receipt-header {
+            text-align: center;
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .receipt-header h2 {
+            font-size: 1.6rem;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+
+        .receipt-header p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .receipt-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+            margin: 15px 0;
+        }
+
+        .receipt-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            font-size: 0.95rem;
+            position: relative;
+        }
+
+        .receipt-row.label {
+            color: var(--text-muted);
+        }
+
+        .receipt-row.value {
+            font-weight: 600;
+            color: var(--text-light);
+        }
+
+        .receipt-row.highlight {
+            background: rgba(255, 107, 53, 0.1);
+            margin: 10px -10px;
+            padding: 15px 10px;
+            border-radius: 8px;
+        }
+
+        .receipt-row.highlight .value {
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+
+        .receipt-footer {
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px dashed var(--border);
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .receipt-footer i {
+            color: var(--primary);
+            margin-right: 5px;
+        }
+
+        /* ===== BILL HISTORY ===== */
+        .history-section {
+            padding: 0 2rem 40px;
+            max-width: 600px;
+            margin: 0 auto;
+            display: none;
+        }
+
+        .history-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .history-card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 25px;
+            border: 1px solid var(--border);
+            margin-bottom: 20px;
+            transition: var(--transition);
+        }
+
+        .history-card:hover {
+            border-color: var(--primary);
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .history-header h4 {
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+
+        .history-date {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        /* ===== TOAST ===== */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--bg-card);
+            color: var(--text-light);
+            padding: 16px 30px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            z-index: 3000;
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        .toast i {
+            color: var(--success);
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            text-align: center;
+            padding: 25px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 0 1rem;
+            }
+
+            .nav-links {
+                position: fixed;
+                top: 70px;
+                left: 0;
+                right: 0;
+                background: rgba(15, 15, 26, 0.98);
+                flex-direction: column;
+                padding: 20px;
+                gap: 5px;
+                transform: translateY(-150%);
+                transition: var(--transition);
+                border-bottom: 1px solid var(--border);
+            }
+
+            .nav-links.active {
+                transform: translateY(0);
+            }
+
+            .nav-links a {
+                width: 100%;
+                text-align: center;
+                padding: 12px;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .hero {
+                padding: 40px 1rem 30px;
+            }
+
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+
+            .menu-section {
+                padding: 20px 1rem;
+            }
+
+            .menu-grid {
+                grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+                gap: 15px;
+            }
+
+            .order-section, .receipt-section, .history-section {
+                padding: 0 1rem 30px;
+            }
+
+            .order-card, .receipt, .history-card {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .menu-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero h1 {
+                font-size: 1.5rem;
+            }
+
+            .nav-brand {
+                font-size: 1.2rem;
+            }
+
+            .nav-brand i {
+                font-size: 1.4rem;
+            }
+        }
+    </style>
+<base target="_blank">
+</head>
+<body>
+
+    <!-- ===== NAVBAR ===== -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <i class="fas fa-utensils"></i>
+            <span>NTHOTELS</span>
+        </div>
+        <div class="nav-links" id="navLinks">
+            <a href="#menu" class="active" onclick="showSection('menu')">Menu</a>
+            <a href="#history" onclick="showSection('history')">History</a>
+        </div>
+        <div class="hamburger" onclick="toggleMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </nav>
+
+    <!-- ===== HERO ===== -->
+    <header class="hero">
+        <h1>Welcome to NTHOTELS</h1>
+        <p>Order your favorite South Indian food</p>
+    </header>
+
+    <!-- ===== MENU SECTION ===== -->
+    <section class="menu-section" id="menuSection">
+        <h2><i class="fas fa-utensils"></i> Our Menu</h2>
+        <div class="menu-grid">
+            <!-- Idly -->
+            <div class="food-card">
+                <img src="https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=400&h=300&fit=crop" alt="Idly" class="food-image">
+                <div class="food-details">
+                    <div class="food-name">Idly</div>
+                    <div class="food-price">Rs.20</div>
+                    <button class="btn-buy" onclick="selectFood('Idly', 20)">
+                        <i class="fas fa-shopping-cart"></i> Buy Now
+                    </button>
+                </div>
+            </div>
+            <!-- Dosa -->
+            <div class="food-card">
+                <img src="https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=400&h=300&fit=crop" alt="Dosa" class="food-image">
+                <div class="food-details">
+                    <div class="food-name">Dosa</div>
+                    <div class="food-price">Rs.50</div>
+                    <button class="btn-buy" onclick="selectFood('Dosa', 50)">
+                        <i class="fas fa-shopping-cart"></i> Buy Now
+                    </button>
+                </div>
+            </div>
+            <!-- Poori -->
+            <div class="food-card">
+                <img src="https://images.unsplash.com/photo-1606491956689-2ea866880c84?w=400&h=300&fit=crop" alt="Poori" class="food-image">
+                <div class="food-details">
+                    <div class="food-name">Poori</div>
+                    <div class="food-price">Rs.40</div>
+                    <button class="btn-buy" onclick="selectFood('Poori', 40)">
+                        <i class="fas fa-shopping-cart"></i> Buy Now
+                    </button>
+                </div>
+            </div>
+            <!-- Meals -->
+            <div class="food-card">
+                <img src="download.jpg">
+                    <div class="food-name">Meals</div>
+                    <div class="food-price">Rs.120</div>
+                    <button class="btn-buy" onclick="selectFood('Meals', 120)">
+                        <i class="fas fa-shopping-cart"></i> Buy Now
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== ORDER FORM ===== -->
+    <section class="order-section" id="orderSection">
+        <div class="order-card">
+            <h3><i class="fas fa-edit"></i> Order Details</h3>
+
+            <div class="form-group">
+                <label>Selected Food</label>
+                <input type="text" id="selectedFood" readonly>
+            </div>
+
+            <div class="form-group">
+                <label>Price per Item</label>
+                <input type="text" id="foodPrice" readonly>
+            </div>
+
+            <div class="form-group">
+                <label>Quantity</label>
+                <div class="qty-control">
+                    <button class="qty-btn" onclick="changeQty(-1)">-</button>
+                    <span class="qty-value" id="qtyValue">1</span>
+                    <button class="qty-btn" onclick="changeQty(1)">+</button>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Select Table</label>
+                <select id="tableSelect">
+                    <option value="">-- Select Table --</option>
+                    <option value="1">Table 1</option>
+                    <option value="2">Table 2</option>
+                    <option value="3">Table 3</option>
+                    <option value="4">Table 4</option>
+                    <option value="5">Table 5</option>
+                    <option value="6">Table 6</option>
+                    <option value="7">Table 7</option>
+                    <option value="8">Table 8</option>
+                    <option value="9">Table 9</option>
+                    <option value="10">Table 10</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Customer Phone</label>
+                <input type="tel" id="customerPhone" placeholder="Enter 10-digit phone number">
+            </div>
+
+            <div class="bill-preview">
+                <div class="bill-row">
+                    <span>Quantity</span>
+                    <span id="billQty">1</span>
+                </div>
+                <div class="bill-row">
+                    <span>Price</span>
+                    <span id="billPrice">Rs.0</span>
+                </div>
+                <div class="bill-row total">
+                    <span>Total Amount</span>
+                    <span id="billTotal">Rs.0</span>
+                </div>
+            </div>
+
+            <button class="btn-submit" onclick="saveOrder()">
+                <i class="fas fa-save"></i> Save Bill
+            </button>
+            <button class="btn-submit" style="margin-top:10px; background: linear-gradient(135deg, #28b487, #5fd5a5);" onclick="submitOrder()">
+                <i class="fas fa-paper-plane"></i> Submit & Send
+            </button>
+            <button class="btn-cancel" onclick="cancelOrder()">
+                <i class="fas fa-times"></i> Cancel
+            </button>
+        </div>
+    </section>
+
+    <!-- ===== BILL RECEIPT ===== -->
+    <section class="receipt-section" id="receiptSection">
+        <div class="receipt" id="receipt">
+            <div class="receipt-header">
+                <h2><i class="fas fa-receipt"></i> NTHOTELS</h2>
+                <p>Bill Receipt</p>
+            </div>
+            <div class="receipt-divider"></div>
+
+            <div class="receipt-row">
+                <span class="label">Order ID</span>
+                <span class="value" id="rOrderId">-</span>
+            </div>
+            <div class="receipt-row">
+                <span class="label">Date</span>
+                <span class="value" id="rDate">-</span>
+            </div>
+            <div class="receipt-row">
+                <span class="label">Time</span>
+                <span class="value" id="rTime">-</span>
+            </div>
+            <div class="receipt-row">
+                <span class="label">Table Number</span>
+                <span class="value" id="rTable">-</span>
+            </div>
+            <div class="receipt-row">
+                <span class="label">Customer Phone</span>
+                <span class="value" id="rCustomerPhone">-</span>
+            </div>
+            <div class="receipt-divider"></div>
+            <div class="receipt-row">
+                <span class="label">Food Item</span>
+                <span class="value" id="rFood">-</span>
+            </div>
+            <div class="receipt-row">
+                <span class="label">Quantity</span>
+                <span class="value" id="rQty">-</span>
+            </div>
+            <div class="receipt-row">
+                <span class="label">Price per Item</span>
+                <span class="value" id="rPrice">-</span>
+            </div>
+            <div class="receipt-row highlight">
+                <span class="label">Total Amount</span>
+                <span class="value" id="rTotal">-</span>
+            </div>
+
+            <div class="receipt-footer">
+                <i class="fas fa-heart"></i> Thank you for dining with us!
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== BILL HISTORY ===== -->
+    <section class="history-section" id="historySection">
+        <h2 style="text-align:center; margin-bottom:25px; color: var(--primary);">
+            <i class="fas fa-history"></i> Bill History
+        </h2>
+        <div id="historyList"></div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer">
+        <p>NTHOTELS - Smart Billing System</p>
+    </footer>
+
+    <!-- ===== TOAST ===== -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMsg"></span>
+    </div>
+
+    <!-- ===== JAVASCRIPT ===== -->
+    <script>
+        // ===== STATE VARIABLES =====
+        let selectedFoodName = '';
+        let selectedFoodPrice = 0;
+        let quantity = 1;
+        let currentBill = null;
+
+        // ===== MOBILE MENU TOGGLE =====
+        function toggleMenu() {
+            document.getElementById('navLinks').classList.toggle('active');
+        }
+
+        // ===== SHOW SECTION =====
+        function showSection(section) {
+            // Update nav active state
+            document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById('navLinks').classList.remove('active');
+
+            // Hide all sections
+            document.getElementById('menuSection').style.display = 'none';
+            document.getElementById('orderSection').classList.remove('active');
+            document.getElementById('receiptSection').classList.remove('active');
+            document.getElementById('historySection').classList.remove('active');
+
+            // Show selected section
+            if (section === 'menu') {
+                document.getElementById('menuSection').style.display = 'block';
+            } else if (section === 'history') {
+                document.getElementById('historySection').classList.add('active');
+                loadHistory();
+            }
+        }
+
+        // ===== SELECT FOOD =====
+        function selectFood(name, price) {
+            selectedFoodName = name;
+            selectedFoodPrice = price;
+            quantity = 1;
+
+            // Update form
+            document.getElementById('selectedFood').value = name;
+            document.getElementById('foodPrice').value = 'Rs.' + price;
+            document.getElementById('qtyValue').textContent = quantity;
+            document.getElementById('tableSelect').value = '';
+
+            // Update bill preview
+            updateBillPreview();
+
+            // Show order section
+            document.getElementById('menuSection').style.display = 'none';
+            document.getElementById('orderSection').classList.add('active');
+            document.getElementById('receiptSection').classList.remove('active');
+            document.getElementById('historySection').classList.remove('active');
+
+            // Scroll to order form
+            document.getElementById('orderSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // ===== CHANGE QUANTITY =====
+        function changeQty(delta) {
+            quantity += delta;
+            if (quantity < 1) quantity = 1;
+            if (quantity > 20) quantity = 20;
+            document.getElementById('qtyValue').textContent = quantity;
+            updateBillPreview();
+        }
+
+        // ===== UPDATE BILL PREVIEW =====
+        function updateBillPreview() {
+            const total = selectedFoodPrice * quantity;
+            document.getElementById('billQty').textContent = quantity;
+            document.getElementById('billPrice').textContent = 'Rs.' + selectedFoodPrice;
+            document.getElementById('billTotal').textContent = 'Rs.' + total;
+        }
+
+        // ===== CANCEL ORDER =====
+        function cancelOrder() {
+            document.getElementById('orderSection').classList.remove('active');
+            document.getElementById('menuSection').style.display = 'block';
+            document.getElementById('receiptSection').classList.remove('active');
+        }
+
+        // ===== SHOW TOAST =====
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMsg').textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        // ===== SUBMIT ORDER =====
+        function saveOrder() {
+            const table = document.getElementById('tableSelect').value;
+            const customerPhone = document.getElementById('customerPhone').value.trim();
+
+            if (!table) {
+                showToast('Please select a table!');
+                document.getElementById('tableSelect').focus();
+                return;
+            }
+
+            if (!/^[6-9]\d{9}$/.test(customerPhone)) {
+                showToast('Enter a valid 10-digit customer phone number.');
+                document.getElementById('customerPhone').focus();
+                return;
+            }
+
+            // Generate order details for saving
+            const now = new Date();
+            const orderId = 'NTH' + Math.floor(100000 + Math.random() * 900000);
+            const dateStr = now.toLocaleDateString('en-IN');
+            const timeStr = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+            const total = selectedFoodPrice * quantity;
+
+            currentBill = {
+                orderId: orderId,
+                shopName: 'NTHOTELS',
+                date: dateStr,
+                time: timeStr,
+                tableNumber: table,
+                customerPhone: customerPhone,
+                foodName: selectedFoodName,
+                quantity: quantity,
+                price: selectedFoodPrice,
+                total: total,
+                timestamp: now.getTime()
+            };
+
+            saveBill(currentBill);
+            displayReceipt(currentBill);
+            showToast('Bill saved on phone. Now press Submit & Send.');
+        }
+
+        function submitOrder() {
+            const customerPhone = document.getElementById('customerPhone').value.trim();
+            const table = document.getElementById('tableSelect').value;
+
+            if (!table) {
+                showToast('Please select a table!');
+                document.getElementById('tableSelect').focus();
+                return;
+            }
+
+            if (!/^[6-9]\d{9}$/.test(customerPhone)) {
+                showToast('Enter a valid 10-digit customer phone number.');
+                document.getElementById('customerPhone').focus();
+                return;
+            }
+
+            if (!currentBill || currentBill.customerPhone !== customerPhone || currentBill.tableNumber !== table) {
+                saveOrder();
+            }
+
+            downloadBill(currentBill);
+            sendWhatsApp(currentBill, '919626782279');
+            showToast('Bill downloaded and sent to hotel WhatsApp!');
+        }
+
+        // ===== DISPLAY RECEIPT =====
+        function displayReceipt(bill) {
+            document.getElementById('rOrderId').textContent = bill.orderId;
+            document.getElementById('rDate').textContent = bill.date;
+            document.getElementById('rTime').textContent = bill.time;
+            document.getElementById('rTable').textContent = 'Table ' + bill.tableNumber;
+            document.getElementById('rCustomerPhone').textContent = bill.customerPhone || '-';
+            document.getElementById('rFood').textContent = bill.foodName;
+            document.getElementById('rQty').textContent = bill.quantity;
+            document.getElementById('rPrice').textContent = 'Rs.' + bill.price;
+            document.getElementById('rTotal').textContent = 'Rs.' + bill.total;
+
+            document.getElementById('orderSection').classList.remove('active');
+            document.getElementById('receiptSection').classList.add('active');
+            document.getElementById('receiptSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function downloadBill(bill) {
+            const content =
+                'NTHOTELS - Bill Receipt\n' +
+                'Order ID: ' + bill.orderId + '\n' +
+                'Date: ' + bill.date + '\n' +
+                'Time: ' + bill.time + '\n' +
+                'Table Number: ' + bill.tableNumber + '\n' +
+                'Customer Phone: ' + bill.customerPhone + '\n' +
+                'Food Item: ' + bill.foodName + '\n' +
+                'Quantity: ' + bill.quantity + '\n' +
+                'Price per Item: Rs.' + bill.price + '\n' +
+                'Total Amount: Rs.' + bill.total + '\n' +
+                'Thank you for dining with us!\n';
+            const blob = new Blob([content], { type: 'text/plain' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = bill.orderId + '.txt';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(link.href);
+        }
+
+        // ===== SEND WHATSAPP =====
+        function sendWhatsApp(bill, phone) {
+            const targetPhone = phone && /^[6-9]\d{9}$/.test(phone) ? phone : '919626782279';
+            const message = encodeURIComponent(
+                '*NTHOTELS - Bill Receipt*\n' +
+                '------------------------\n' +
+                '*Order ID:* ' + bill.orderId + '\n' +
+                '*Date:* ' + bill.date + '\n' +
+                '*Time:* ' + bill.time + '\n' +
+                '*Table:* ' + bill.tableNumber + '\n' +
+                '------------------------\n' +
+                '*Item:* ' + bill.foodName + '\n' +
+                '*Qty:* ' + bill.quantity + '\n' +
+                '*Price:* Rs.' + bill.price + '\n' +
+                '------------------------\n' +
+                '*Total:* Rs.' + bill.total + '\n' +
+                '------------------------\n' +
+                'Thank you for dining with us!'
+            );
+
+            const whatsappUrl = 'https://wa.me/' + targetPhone + '?text=' + message;
+            window.open(whatsappUrl, '_blank');
+        }
+
+        // ===== SAVE BILL TO LOCALSTORAGE =====
+        function saveBill(bill) {
+            let bills = JSON.parse(localStorage.getItem('nthotels_bills')) || [];
+            bills.unshift(bill); // Add to beginning
+            // Keep only last 20 bills
+            if (bills.length > 20) bills = bills.slice(0, 20);
+            localStorage.setItem('nthotels_bills', JSON.stringify(bills));
+        }
+
+        // ===== LOAD HISTORY =====
+        function loadHistory() {
+            const bills = JSON.parse(localStorage.getItem('nthotels_bills')) || [];
+            const container = document.getElementById('historyList');
+
+            if (bills.length === 0) {
+                container.innerHTML = '<div style="text-align:center; padding:40px; color: var(--text-muted);">' +
+                    '<i class="fas fa-receipt" style="font-size:3rem; margin-bottom:15px; display:block;"></i>' +
+                    'No bill history found</div>';
+                return;
+            }
+
+            container.innerHTML = bills.map((bill, index) => `
+                <div class="history-card">
+                    <div class="history-header">
+                        <h4><i class="fas fa-receipt"></i> ${bill.orderId}</h4>
+                        <span class="history-date">${bill.date} ${bill.time}</span>
+                    </div>
+                    <div class="receipt-row">
+                        <span class="label">Table</span>
+                        <span class="value">Table ${bill.tableNumber}</span>
+                    </div>
+                    <div class="receipt-row">
+                        <span class="label">Item</span>
+                        <span class="value">${bill.foodName} x ${bill.quantity}</span>
+                    </div>
+                    <div class="receipt-row highlight" style="margin:10px 0; padding:10px;">
+                        <span class="label">Total</span>
+                        <span class="value">Rs.${bill.total}</span>
+                    </div>
+                    <button class="btn-buy" style="margin-top:10px;" onclick="resendWhatsApp(${index})">
+                        <i class="fab fa-whatsapp"></i> Resend to WhatsApp
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        // ===== RESEND WHATSAPP =====
+        function resendWhatsApp(index) {
+            const bills = JSON.parse(localStorage.getItem('nthotels_bills')) || [];
+            if (bills[index]) {
+                sendWhatsApp(bills[index]);
+                showToast('Resent to WhatsApp!');
+            }
+        }
+
+        // ===== CHECK FOR SAVED BILL ON LOAD =====
+        function checkSavedBill() {
+            const bills = JSON.parse(localStorage.getItem('nthotels_bills')) || [];
+            if (bills.length > 0) {
+                // Show last bill as receipt if user was on receipt page
+                const lastBill = bills[0];
+                // Don't auto-show, just keep in history
+            }
+        }
+
+        // ===== INITIALIZE =====
+        document.addEventListener('DOMContentLoaded', function() {
+            checkSavedBill();
+        });
+    </script>
+</body>
+</html>
